@@ -22,6 +22,11 @@ namespace cli_repo_program.helpers
             Console.WriteLine("\nFile open exception. Make sure the output file is not already in use and that the output path is valid.");
         }
 
+        public void ThrowURIException()
+        {
+            Console.WriteLine("\nURI format exception. Please ensure the OrganizationURL specified in ConstantValues.cs is valid.");
+        }
+
         public void ShowWorkItemIssue(int workItemId)
         {
             Console.WriteLine($"\nUnable to retrieve pull requests for work item {workItemId}");

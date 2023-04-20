@@ -30,13 +30,18 @@ namespace cli_repo_program.controllers
             this.errorHandler = new ErrorHandler();
 
             // create a connection
-            Uri orgUrl = new Uri(ConstantValues.OrganizationURL);
-            this.connection = new VssConnection(orgUrl, new VssBasicCredential(string.Empty, personalAccessToken));
-
             try
             {
+                Uri orgUrl = new Uri(ConstantValues.OrganizationURL);
+                this.connection = new VssConnection(orgUrl, new VssBasicCredential(string.Empty, personalAccessToken));
+
                 var streamWriter = new StreamWriter(outputFilePath);
                 this.csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
+            }
+            catch (System.UriFormatException)
+            {
+                this.errorHandler.ThrowURIException();
+                Environment.Exit(0);
             }
             // handle I/O errors
             catch (Exception)
@@ -157,10 +162,10 @@ namespace cli_repo_program.controllers
 
             List<TeamSettingsIteration> results = workHttpClient.GetTeamIterationsAsync(teamContext).Result;
 
-            if(results)
+            if (results != null && results.Count > 0)
             {
                 // get the iteration that matches the inputted string iteration path
-                iterationMatch = results.FirstOrDefault(x => x.Path == iterationPath);
+                iterationMatch = results.First(x => x.Path == iterationPath);
 
                 if (iterationMatch != null)
                 {
@@ -170,6 +175,9 @@ namespace cli_repo_program.controllers
                 {
                     errorHandler.HandleError("No iteration found");
                 }
+            } else
+            {
+                errorHandler.HandleError("No iteration found");
             }
 
             return iterationMatch;

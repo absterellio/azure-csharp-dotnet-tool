@@ -31,29 +31,38 @@ namespace ConsoleApp
                         string personalAccessToken = args[1];
                         string outputFilePath = args[2]; // where to write the output CSV
 
-                        // generate the report
-                        IterationLogic il = new IterationLogic(personalAccessToken,outputFilePath);
-                        il.GetIterationInformation(inputtedIteration);
-                    } else
+                        // do some checks for the output file
+                        if (OutputURLChecks(outputFilePath))
+                        {
+                            // generate the report
+                            IterationLogic il = new IterationLogic(personalAccessToken, outputFilePath);
+                            il.GetIterationInformation(inputtedIteration);
+                        } else
+                        {
+                            ReportError((int)ConstantValues.ErrorType.OutputFileInvalid, e);
+                        }
+                    }
+                    else
                     {
                         ReportError((int)ConstantValues.ErrorType.IterationPath, e);
                     }
-                } else
+                }
+                else
                 {
                     ReportError((int)ConstantValues.ErrorType.PersonalAccessToken, e);
                 }
             }
             else
             {
-                ReportError((int)ConstantValues.ErrorType.OutputFile, e);
+                ReportError((int)ConstantValues.ErrorType.OutputFileUnavailable, e);
             }
         }
 
-        private static void ReportError(int errorType, ErrorHandler e) 
+        private static void ReportError(int errorType, ErrorHandler e)
         {
             ConstantValues.ErrorType enumVal = (ConstantValues.ErrorType)errorType;
 
-            switch(enumVal)
+            switch (enumVal)
             {
                 case ConstantValues.ErrorType.IterationPath:
                     e.HandleError("No iteration path specified as first argument.");
@@ -61,13 +70,21 @@ namespace ConsoleApp
                 case ConstantValues.ErrorType.PersonalAccessToken:
                     e.HandleError("No personal access token specified as second argument.");
                     break;
-                case ConstantValues.ErrorType.OutputFile:
+                case ConstantValues.ErrorType.OutputFileUnavailable:
                     e.HandleError("No output file specified as third argument");
+                    break;
+                case ConstantValues.ErrorType.OutputFileInvalid:
+                    e.HandleError("Please check the formatting of the output file specified. Filename should end with \".csv\"");
                     break;
                 default:
                     e.HandleError("An error occured");
                     break;
             }
+        }
+
+        private static bool OutputURLChecks(string outputUrl)
+        {
+            return outputUrl.Length > 4 && outputUrl.EndsWith(".csv");
         }
     }
 }

@@ -12,7 +12,9 @@ namespace cli_repo_program.models
             Unknown,
             IterationPath,
             PersonalAccessToken,
-            OutputFile
+            OutputFileUnavailable,
+            OutputFileInvalid,
+            URIInvalid
         };
     }
 }
