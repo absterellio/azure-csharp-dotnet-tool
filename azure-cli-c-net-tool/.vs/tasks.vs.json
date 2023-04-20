@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "task-cli repo program",
+      "appliesTo": "cli repo program.csproj",
+      "type": "msbuild"
+    }
+  ]
+}
